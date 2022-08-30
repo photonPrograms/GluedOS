@@ -10,13 +10,11 @@ static struct Process process_table[NUM_PROC];
 static int pid_num = 1;
 static struct ProcessControl pc;
 
-static void set_tss(struct Process *proc)
-{
+static void set_tss(struct Process *proc) {
     Tss.rsp0 = proc->stack + STACK_SIZE;    
 }
 
-static struct Process* find_unused_process(void)
-{
+static struct Process* find_unused_process(void) {
     struct Process *process = NULL;
 
     for (int i = 0; i < NUM_PROC; i++) {
@@ -29,8 +27,7 @@ static struct Process* find_unused_process(void)
     return process;
 }
 
-static void set_process_entry(struct Process *proc, uint64_t addr)
-{
+static void set_process_entry(struct Process *proc, uint64_t addr) {
     uint64_t stack_top;
 
     proc->state = PROC_INIT;
@@ -58,13 +55,11 @@ static void set_process_entry(struct Process *proc, uint64_t addr)
     proc->state = PROC_READY;    
 }
 
-static struct ProcessControl* get_pc(void)
-{
+static struct ProcessControl* get_pc(void) {
     return &pc;
 }
 
-void init_process(void)
-{
+void init_process(void) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *list;
@@ -80,8 +75,7 @@ void init_process(void)
     }
 }
 
-void launch(void)
-{
+void launch(void) {
     struct ProcessControl *process_control;
     struct Process *process;
 
@@ -95,15 +89,13 @@ void launch(void)
     pstart(process->tf);
 }
 
-static void switch_process(struct Process *prev, struct Process *current)
-{
+static void switch_process(struct Process *prev, struct Process *current) {
     set_tss(current);
     switch_vm(current->page_map);
     swap(&prev->context, current->context);
 }
 
-static void schedule(void)
-{
+static void schedule(void) {
     struct Process *prev_proc;
     struct Process *current_proc;
     struct ProcessControl *process_control;
@@ -121,8 +113,7 @@ static void schedule(void)
     switch_process(prev_proc, current_proc);   
 }
 
-void yield(void)
-{
+void yield(void) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *list;
@@ -140,8 +131,7 @@ void yield(void)
     schedule();
 }
 
-void sleep(int wait)
-{
+void sleep(int wait) {
     struct ProcessControl *process_control;
     struct Process *process;
     
@@ -154,8 +144,7 @@ void sleep(int wait)
     schedule();
 }
 
-void wake_up(int wait)
-{
+void wake_up(int wait) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *ready_list;
@@ -173,8 +162,7 @@ void wake_up(int wait)
     }
 }
 
-void exit(void)
-{
+void exit(void) {
     struct ProcessControl *process_control;
     struct Process* process;
     struct HeadList *list;
@@ -190,8 +178,7 @@ void exit(void)
     schedule();
 }
 
-void wait(void)
-{
+void wait(void) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *list;

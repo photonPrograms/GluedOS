@@ -29,8 +29,7 @@ static char shift_key_map[256] = {
 static struct KeyboardBuffer key_buffer = { {0}, 0, 0, 500 };
 static unsigned int flag;
 
-static void write_key_buffer(char ch)
-{
+static void write_key_buffer(char ch) {
     int front = key_buffer.front;
     int end = key_buffer.end;
     int size = key_buffer.size;
@@ -42,8 +41,7 @@ static void write_key_buffer(char ch)
     key_buffer.end = end % size;
 }
 
-char read_key_buffer(void)
-{
+char read_key_buffer(void) {
     int front = key_buffer.front;
 
     if (front == key_buffer.end) {
@@ -54,8 +52,7 @@ char read_key_buffer(void)
     return key_buffer.buffer[front];
 }
 
-static char keyboard_read(void)
-{
+static char keyboard_read(void) {
     unsigned char scan_code;
     char ch;
 
@@ -96,8 +93,7 @@ static char keyboard_read(void)
     return ch;
 }
 
-void keyboard_handler(void)
-{
+void keyboard_handler(void) {
     char ch = keyboard_read();
 
     if (ch > 0) {

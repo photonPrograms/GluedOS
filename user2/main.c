@@ -2,16 +2,14 @@
 #include "console.h"
 #include "stdint.h"
     
-static void cmd_get_total_memory(void)
-{
+static void cmd_get_total_memory(void) {
     uint64_t total;
     
     total = get_total_memoryu();
     printf("Total Memory is %dMB\n", total);
 }
 
-static int read_cmd(char *buffer)
-{
+static int read_cmd(char *buffer) {
     char ch[2] = { 0 };
     int buffer_size = 0;
 
@@ -37,8 +35,7 @@ static int read_cmd(char *buffer)
     return buffer_size;
 }
 
-static int parse_cmd(char *buffer, int buffer_size)
-{
+static int parse_cmd(char *buffer, int buffer_size) {
     int cmd = -1;
 
     if (buffer_size == 8 && (!memcmp("totalmem", buffer, 8))) {
@@ -48,8 +45,7 @@ static int parse_cmd(char *buffer, int buffer_size)
     return cmd;
 }
 
-static void execute_cmd(int cmd)
-{ 
+static void execute_cmd(int cmd) { 
     CmdFunc cmd_list[1] = {cmd_get_total_memory};
     
     if (cmd == 0) {       
@@ -57,14 +53,13 @@ static void execute_cmd(int cmd)
     }
 }
 
-int main(void)
-{
+int main(void) {
     char buffer[80] = { 0 };
     int buffer_size = 0;
     int cmd = 0;
 
     while (1) {
-        printf("shell# ");
+        printf("glued-shell# ");
         buffer_size = read_cmd(buffer);
 
         if (buffer_size == 0) {

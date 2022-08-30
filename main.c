@@ -4,12 +4,12 @@
 #include "process.h"
 #include "syscall.h"
 
-void KMain(void)
-{ 
+void KMain(void) { 
    init_idt();
    init_memory();  
    init_kvm();
    init_system_call();
    init_process();
+   printk("GLUED: Welcome to the Best OS!\n");
    launch();
 }
