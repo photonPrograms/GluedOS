@@ -1,0 +1,12 @@
+*.bin
+FD13LIVE.iso
+*.img
+kernel
+kernel.bin
+user1/*.bin
+user1/user
+totalmem/totalmem
+totalmem/user
+loader/loader.bin
+loader/entry.bin
+loader/entry
