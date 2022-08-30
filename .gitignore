@@ -1,0 +1,8 @@
+*.bin
+*.img
+user1/*.bin
+user1/user
+user2/*.bin
+user2/user
+user3/*.bin
+user3/user
