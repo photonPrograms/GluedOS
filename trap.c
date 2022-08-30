@@ -9,8 +9,7 @@ static struct IdtPtr idt_pointer;
 static struct IdtEntry vectors[256];
 static uint64_t ticks;
 
-static void init_idt_entry(struct IdtEntry *entry, uint64_t addr, uint8_t attribute)
-{
+static void init_idt_entry(struct IdtEntry *entry, uint64_t addr, uint8_t attribute) {
     entry->low = (uint16_t)addr;
     entry->selector = 8;
     entry->attr = attribute;
@@ -18,8 +17,7 @@ static void init_idt_entry(struct IdtEntry *entry, uint64_t addr, uint8_t attrib
     entry->high = (uint32_t)(addr>>32);
 }
 
-void init_idt(void)
-{
+void init_idt(void) {
     init_idt_entry(&vectors[0],(uint64_t)vector0,0x8e);
     init_idt_entry(&vectors[1],(uint64_t)vector1,0x8e);
     init_idt_entry(&vectors[2],(uint64_t)vector2,0x8e);
@@ -48,19 +46,16 @@ void init_idt(void)
     load_idt(&idt_pointer);
 }
 
-uint64_t get_ticks(void)
-{
+uint64_t get_ticks(void) {
     return ticks;
 }
 
-static void timer_handler(void)
-{
+static void timer_handler(void) {
     ticks++;
     wake_up(-1);
 }
 
-void handler(struct TrapFrame *tf)
-{
+void handler(struct TrapFrame *tf) {
     unsigned char isr_value;
 
     switch (tf->trapno) {

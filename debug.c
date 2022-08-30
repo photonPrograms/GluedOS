@@ -1,8 +1,7 @@
 #include "debug.h"
 #include "print.h"
 
-void error_check(char *file, uint64_t line)
-{
+void error_check(char *file, uint64_t line) {
     printk("\n------------------------------------------\n");
     printk("             ERROR CHECK");
     printk("\n------------------------------------------\n");

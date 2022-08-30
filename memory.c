@@ -13,8 +13,7 @@ static uint64_t memory_end;
 static uint64_t total_mem;
 extern char end;
 
-void init_memory(void)
-{
+void init_memory(void) {
     int32_t count = *(int32_t*)0x20000;
     struct E820 *mem_map = (struct E820*)0x20008;	
     int free_region_count = 0;
@@ -46,13 +45,11 @@ void init_memory(void)
     memory_end = (uint64_t)free_memory.next + PAGE_SIZE;   
 }
 
-uint64_t get_total_memory(void)
-{
+uint64_t get_total_memory(void) {
     return total_mem/1024/1024;
 }
 
-static void free_region(uint64_t v, uint64_t e)
-{
+static void free_region(uint64_t v, uint64_t e) {
     for (uint64_t start = PA_UP(v); start+PAGE_SIZE <= e; start += PAGE_SIZE) {        
         if (start+PAGE_SIZE <= 0xffff800030000000) {            
            kfree(start);
@@ -60,8 +57,7 @@ static void free_region(uint64_t v, uint64_t e)
     }
 }
 
-void kfree(uint64_t v)
-{
+void kfree(uint64_t v) {
     ASSERT(v % PAGE_SIZE == 0);
     ASSERT(v >= (uint64_t) & end);
     ASSERT(v+PAGE_SIZE <= 0xffff800030000000);
@@ -71,8 +67,7 @@ void kfree(uint64_t v)
     free_memory.next = page_address;
 }
 
-void* kalloc(void)
-{
+void* kalloc(void) {
     struct Page *page_address = free_memory.next;
 
     if (page_address != NULL) {
@@ -86,8 +81,7 @@ void* kalloc(void)
     return page_address;
 }
 
-static PDPTR find_pml4t_entry(uint64_t map, uint64_t v, int alloc, uint32_t attribute)
-{
+static PDPTR find_pml4t_entry(uint64_t map, uint64_t v, int alloc, uint32_t attribute) {
     PDPTR *map_entry = (PDPTR*)map;
     PDPTR pdptr = NULL;
     unsigned int index = (v >> 39) & 0x1FF;
@@ -106,8 +100,7 @@ static PDPTR find_pml4t_entry(uint64_t map, uint64_t v, int alloc, uint32_t attr
     return pdptr;    
 }
 
-static PD find_pdpt_entry(uint64_t map, uint64_t v, int alloc, uint32_t attribute)
-{
+static PD find_pdpt_entry(uint64_t map, uint64_t v, int alloc, uint32_t attribute) {
     PDPTR pdptr = NULL;
     PD pd = NULL;
     unsigned int index = (v >> 30) & 0x1FF;
@@ -130,8 +123,7 @@ static PD find_pdpt_entry(uint64_t map, uint64_t v, int alloc, uint32_t attribut
     return pd;
 }
 
-bool map_pages(uint64_t map, uint64_t v, uint64_t e, uint64_t pa, uint32_t attribute)
-{
+bool map_pages(uint64_t map, uint64_t v, uint64_t e, uint64_t pa, uint32_t attribute) {
     uint64_t vstart = PA_DOWN(v);
     uint64_t vend = PA_UP(e);
     PD pd = NULL;
@@ -159,13 +151,11 @@ bool map_pages(uint64_t map, uint64_t v, uint64_t e, uint64_t pa, uint32_t attri
     return true;
 }
 
-void switch_vm(uint64_t map)
-{
+void switch_vm(uint64_t map) {
     load_cr3(V2P(map));   
 }
 
-uint64_t setup_kvm(void)
-{
+uint64_t setup_kvm(void) {
     uint64_t page_map = (uint64_t)kalloc();
 
     if (page_map != 0) {
@@ -178,16 +168,14 @@ uint64_t setup_kvm(void)
     return page_map;
 }
 
-void init_kvm(void)
-{
+void init_kvm(void) {
     uint64_t page_map = setup_kvm();
     ASSERT(page_map != 0);
     switch_vm(page_map);
     //printk("memory manager is working now");
 }
 
-bool setup_uvm(uint64_t map, uint64_t start, int size)
-{
+bool setup_uvm(uint64_t map, uint64_t start, int size) {
     bool status = false;
     void *page = kalloc();
 
@@ -206,8 +194,7 @@ bool setup_uvm(uint64_t map, uint64_t start, int size)
     return status;
 }
 
-void free_pages(uint64_t map, uint64_t vstart, uint64_t vend)
-{
+void free_pages(uint64_t map, uint64_t vstart, uint64_t vend) {
     unsigned int index; 
 
     ASSERT(vstart % PAGE_SIZE == 0);
@@ -228,8 +215,7 @@ void free_pages(uint64_t map, uint64_t vstart, uint64_t vend)
     } while (vstart+PAGE_SIZE <= vend);
 }
 
-static void free_pdt(uint64_t map)
-{
+static void free_pdt(uint64_t map) {
     PDPTR *map_entry = (PDPTR*)map;
 
     for (int i = 0; i < 512; i++) {
@@ -246,8 +232,7 @@ static void free_pdt(uint64_t map)
     }
 }
 
-static void free_pdpt(uint64_t map)
-{
+static void free_pdpt(uint64_t map) {
     PDPTR *map_entry = (PDPTR*)map;
 
     for (int i = 0; i < 512; i++) {
@@ -258,21 +243,18 @@ static void free_pdpt(uint64_t map)
     }
 }
 
-static void free_pml4t(uint64_t map)
-{
+static void free_pml4t(uint64_t map) {
     kfree(map);
 }
 
-void free_vm(uint64_t map)
-{   
+void free_vm(uint64_t map) {   
     free_pages(map, 0x400000, 0x400000+PAGE_SIZE);
     free_pdt(map);
     free_pdpt(map);
     free_pml4t(map);
 }
 
-bool copy_uvm(uint64_t dst_map, uint64_t src_map, int size)
-{
+bool copy_uvm(uint64_t dst_map, uint64_t src_map, int size) {
     bool status = false;
     unsigned int index;
     PD pd = NULL;

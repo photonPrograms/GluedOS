@@ -5,30 +5,26 @@
 #include "stdbool.h"
 
 
-static struct BPB* get_fs_bpb(void)
-{
+static struct BPB* get_fs_bpb(void) {
     uint32_t lba = *(uint32_t*)((uint64_t)FS_BASE + 0x1be + 8);
 
     return (struct BPB*)((uint64_t)FS_BASE + lba * 512);
 }
 
-static uint16_t *get_fat_table(void)
-{
+static uint16_t *get_fat_table(void) {
     struct BPB* p = get_fs_bpb();
     uint32_t offset = (uint32_t)p->reserved_sector_count * p->bytes_per_sector;
 
     return (uint16_t *)((uint8_t*)p + offset);
 }
 
-static uint16_t get_cluster_value(uint32_t cluster_index)
-{
+static uint16_t get_cluster_value(uint32_t cluster_index) {
     uint16_t *fat_table = get_fat_table();
 
     return fat_table[cluster_index];
 }
 
-static uint32_t get_cluster_offset(uint32_t index)
-{
+static uint32_t get_cluster_offset(uint32_t index) {
     uint32_t res_size;
     uint32_t fat_size;
     uint32_t dir_size;
@@ -45,22 +41,19 @@ static uint32_t get_cluster_offset(uint32_t index)
         (index - 2) * ((uint32_t)p->sectors_per_cluster * p->bytes_per_sector);
 }
 
-static uint32_t get_cluster_size(void)
-{
+static uint32_t get_cluster_size(void) {
     struct BPB* bpb = get_fs_bpb();
 
     return (uint32_t)bpb->bytes_per_sector * bpb->sectors_per_cluster;
 }
 
-static uint32_t get_root_directory_count(void)
-{
+static uint32_t get_root_directory_count(void) {
     struct BPB* bpb = get_fs_bpb();
 
     return bpb->root_entry_count;
 }
 
-static struct DirEntry *get_root_directory(void)
-{
+static struct DirEntry *get_root_directory(void) {
     struct BPB *p; 
     uint32_t offset; 
 
@@ -70,8 +63,7 @@ static struct DirEntry *get_root_directory(void)
     return (struct DirEntry *)((uint8_t*)p + offset);
 }
 
-static bool is_file_name_equal(struct DirEntry *dir_entry, char *name, char *ext)
-{
+static bool is_file_name_equal(struct DirEntry *dir_entry, char *name, char *ext) {
     bool status = false;
 
     if (memcmp(dir_entry->name, name, 8) == 0 &&
@@ -82,8 +74,7 @@ static bool is_file_name_equal(struct DirEntry *dir_entry, char *name, char *ext
     return status;
 }
 
-static bool split_path(char *path, char *name, char *ext)
-{
+static bool split_path(char *path, char *name, char *ext) {
     int i;
 
     for (i = 0; i < 8 && path[i] != '.' && path[i] != '\0'; i++) {
@@ -113,8 +104,7 @@ static bool split_path(char *path, char *name, char *ext)
     return true;
 }
 
-static uint32_t search_file(char *path)
-{
+static uint32_t search_file(char *path) {
     char name[8] = {"        "};
     char ext[3] =  {"   "};
     uint32_t root_entry_count;
@@ -143,8 +133,7 @@ static uint32_t search_file(char *path)
     return 0xffffffff;
 }
 
-static uint32_t read_raw_data(uint32_t cluster_index, char *buffer, uint32_t size)
-{
+static uint32_t read_raw_data(uint32_t cluster_index, char *buffer, uint32_t size) {
     struct BPB* bpb;
     char *data;
     uint32_t read_size = 0;
@@ -178,13 +167,11 @@ static uint32_t read_raw_data(uint32_t cluster_index, char *buffer, uint32_t siz
     return read_size;
 }
 
-static uint32_t read_file(uint32_t cluster_index, void *buffer, uint32_t size)
-{
+static uint32_t read_file(uint32_t cluster_index, void *buffer, uint32_t size) {
     return read_raw_data(cluster_index, buffer, size);
 }
 
-int load_file(char *path, uint64_t addr)
-{
+int load_file(char *path, uint64_t addr) {
     uint32_t index;
     uint32_t file_size;
     uint32_t cluster_index;
@@ -207,8 +194,7 @@ int load_file(char *path, uint64_t addr)
     return ret;
 }
 
-void init_fs(void)
-{
+void init_fs(void) {
     uint8_t *p = (uint8_t*)get_fs_bpb();
     
     if (p[0x1fe] != 0x55 || p[0x1ff] != 0xaa) {

@@ -3,8 +3,7 @@
 
 extern int writeu(char *buffer, int buffer_size);
 
-static int udecimal_to_string(char *buffer, int position, uint64_t digits)
-{
+static int udecimal_to_string(char *buffer, int position, uint64_t digits) {
     char digits_map[10] = "0123456789";
     char digits_buffer[25];
     int size = 0;
@@ -21,8 +20,7 @@ static int udecimal_to_string(char *buffer, int position, uint64_t digits)
     return size;
 }
 
-static int decimal_to_string(char *buffer, int position, int64_t digits)
-{
+static int decimal_to_string(char *buffer, int position, int64_t digits) {
     int size = 0;
 
     if (digits < 0) {
@@ -35,8 +33,7 @@ static int decimal_to_string(char *buffer, int position, int64_t digits)
     return size;
 }
 
-static int hex_to_string(char *buffer, int position, uint64_t digits)
-{
+static int hex_to_string(char *buffer, int position, uint64_t digits) {
     char digits_buffer[25];
     char digits_map[16] = "0123456789ABCDEF";
     int size = 0;
@@ -55,8 +52,7 @@ static int hex_to_string(char *buffer, int position, uint64_t digits)
     return size+1;
 }
 
-static int read_string(char *buffer, int position, const char *string)
-{
+static int read_string(char *buffer, int position, const char *string) {
     int index = 0;
 
     for (index = 0; string[index] != '\0'; index++) {
@@ -66,8 +62,7 @@ static int read_string(char *buffer, int position, const char *string)
     return index;
 }
 
-int printf(const char *format, ...)
-{
+int printf(const char *format, ...) {
     char buffer[1024];
     int buffer_size = 0;
     int64_t integer = 0;

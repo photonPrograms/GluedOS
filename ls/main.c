@@ -2,8 +2,7 @@
 
 struct DirEntry buffer[1024];
 
-int main(void)
-{
+int main(void) {
     int count;
     char name[10] = { 0 };
 

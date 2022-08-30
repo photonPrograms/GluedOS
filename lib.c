@@ -3,8 +3,7 @@
 #include "stddef.h"
 #include "debug.h"
 
-void append_list_tail(struct HeadList *list, struct List *item)
-{
+void append_list_tail(struct HeadList *list, struct List *item) {
     item->next = NULL;
 
     if (is_list_empty(list)) {
@@ -17,8 +16,7 @@ void append_list_tail(struct HeadList *list, struct List *item)
     }
 }
 
-struct List* remove_list_head(struct HeadList *list)
-{
+struct List* remove_list_head(struct HeadList *list) {
     struct List *item;
 
     if (is_list_empty(list)) {
@@ -35,8 +33,7 @@ struct List* remove_list_head(struct HeadList *list)
     return item;
 }
 
-struct List* remove_list(struct HeadList *list, int wait)
-{
+struct List* remove_list(struct HeadList *list, int wait) {
     struct List *current = list->next;
     struct List *prev = (struct List*)list;
     struct List *item = NULL;
@@ -63,7 +60,6 @@ struct List* remove_list(struct HeadList *list, int wait)
     return item;
 }
 
-bool is_list_empty(struct HeadList *list)
-{
+bool is_list_empty(struct HeadList *list) {
     return (list->next == NULL);
 }

@@ -1,8 +1,7 @@
 #include "lib.h"
 #include "stdint.h"
 
-static int read_cmd(char *buffer)
-{
+static int read_cmd(char *buffer) {
     char ch[2] = { 0 };
     int buffer_size = 0;
 
@@ -28,13 +27,12 @@ static int read_cmd(char *buffer)
     return buffer_size;
 }
 
-int main(void)
-{
+int main(void) {
     char buffer[100] = { 0 };
     int buffer_size = 0;
 
     while (1) {
-        printf("shell# ");
+        printf("glued-shell# ");
         memset(buffer, 0, 100);
         buffer_size = read_cmd(buffer);
 
@@ -44,7 +42,7 @@ int main(void)
 
         int fd = open_file(buffer);
         if (fd == -1) {
-            printf("Command Not Found\n");
+            printf("GLUED: Command Not Found\n");
         }          
         else {
             close_file(fd);

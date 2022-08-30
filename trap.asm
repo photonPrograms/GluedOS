@@ -51,7 +51,7 @@ Trap:
     push r14
     push r15
 
-    mov rdi,rsp
+    mov rdi, rsp
     call handler
 
 TrapReturn:
@@ -71,7 +71,7 @@ TrapReturn:
     pop	rbx
     pop	rax       
 
-    add rsp,16
+    add rsp, 16
     iretq
 
 
@@ -180,14 +180,14 @@ sysint:
     jmp Trap
 
 eoi:
-    mov al,0x20
-    out 0x20,al
+    mov al, 0x20
+    out 0x20, al
     ret
 
 read_isr:
-    mov al,11
-    out 0x20,al
-    in al,0x20
+    mov al, 11
+    out 0x20, al
+    in al, 0x20
     ret
 
 load_idt:
@@ -195,20 +195,20 @@ load_idt:
     ret
 
 load_cr3:
-    mov rax,rdi
-    mov cr3,rax
+    mov rax, rdi
+    mov cr3, rax
     ret
 
 read_cr2:
-    mov rax,cr2
+    mov rax, cr2
     ret
 
 read_cr3:
-    mov rax,cr3
+    mov rax, cr3
     ret
 
 pstart:
-    mov rsp,rdi
+    mov rsp, rdi
     jmp TrapReturn
 
 swap:
@@ -219,8 +219,8 @@ swap:
     push r14
     push r15
     
-    mov [rdi],rsp
-    mov rsp,rsi
+    mov [rdi], rsp
+    mov rsp, rsi
     
     pop r15
     pop r14
@@ -232,8 +232,8 @@ swap:
     ret 
 
 in_byte:
-    mov rdx,rdi
-    in al,dx
+    mov rdx, rdi
+    in al, dx
     ret   
 
 

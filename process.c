@@ -10,13 +10,11 @@ static struct Process process_table[NUM_PROC];
 static int pid_num = 1;
 static struct ProcessControl pc;
 
-static void set_tss(struct Process *proc)
-{
+static void set_tss(struct Process *proc) {
     Tss.rsp0 = proc->stack + STACK_SIZE;    
 }
 
-static struct Process* find_unused_process(void)
-{
+static struct Process* find_unused_process(void) {
     struct Process *process = NULL;
 
     for (int i = 0; i < NUM_PROC; i++) {
@@ -29,8 +27,7 @@ static struct Process* find_unused_process(void)
     return process;
 }
 
-static struct Process* alloc_new_process(void)
-{
+static struct Process* alloc_new_process(void) {
     uint64_t stack_top;
     struct Process *proc;
 
@@ -70,13 +67,11 @@ static struct Process* alloc_new_process(void)
     return proc;    
 }
 
-struct ProcessControl* get_pc(void)
-{
+struct ProcessControl* get_pc(void) {
     return &pc;
 }
 
-static void init_idle_process(void)
-{
+static void init_idle_process(void) {
     struct Process *process;
     struct ProcessControl *process_control;
 
@@ -91,8 +86,7 @@ static void init_idle_process(void)
     process_control->current_process = process;
 }
 
-static void init_user_process(void)
-{
+static void init_user_process(void) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *list;
@@ -109,21 +103,18 @@ static void init_user_process(void)
     append_list_tail(list, (struct List*)process);
 }
 
-void init_process(void)
-{
+void init_process(void) {
     init_idle_process();
     init_user_process();
 }
 
-static void switch_process(struct Process *prev, struct Process *current)
-{
+static void switch_process(struct Process *prev, struct Process *current) {
     set_tss(current);
     switch_vm(current->page_map);
     swap(&prev->context, current->context);
 }
 
-static void schedule(void)
-{
+static void schedule(void) {
     struct Process *prev_proc;
     struct Process *current_proc;
     struct ProcessControl *process_control;
@@ -146,8 +137,7 @@ static void schedule(void)
     switch_process(prev_proc, current_proc);   
 }
 
-void yield(void)
-{
+void yield(void) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *list;
@@ -169,8 +159,7 @@ void yield(void)
     schedule();
 }
 
-void sleep(int wait)
-{
+void sleep(int wait) {
     struct ProcessControl *process_control;
     struct Process *process;
     
@@ -183,8 +172,7 @@ void sleep(int wait)
     schedule();
 }
 
-void wake_up(int wait)
-{
+void wake_up(int wait) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *ready_list;
@@ -202,8 +190,7 @@ void wake_up(int wait)
     }
 }
 
-void exit(void)
-{
+void exit(void) {
     struct ProcessControl *process_control;
     struct Process* process;
     struct HeadList *list;
@@ -220,8 +207,7 @@ void exit(void)
     schedule();
 }
 
-void wait(int pid)
-{
+void wait(int pid) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct HeadList *list;
@@ -256,8 +242,7 @@ void wait(int pid)
     }
 }
 
-int fork(void)
-{
+int fork(void) {
     struct ProcessControl *process_control;
     struct Process *process;
     struct Process *current_process;
@@ -295,8 +280,7 @@ int fork(void)
     return process->pid;
 }
 
-int exec(struct Process *process, char* name)
-{
+int exec(struct Process *process, char* name) {
     int fd;
     uint32_t size;
     

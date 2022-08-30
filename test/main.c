@@ -1,7 +1,6 @@
 #include "lib.h"
 
-int main(void)
-{
+int main(void) {
     printf("test process starts \n");
     
     return 0;
